@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of ianm/oauth2-twitter.
+ *
+ * Copyright (c) IanM.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace IanM\OAuth2\Client\Provider;
 
 use IanM\OAuth2\Client\Provider\Exception\TwitterIdentityProviderException;
@@ -66,7 +75,7 @@ class Twitter extends AbstractProvider
     {
         $request = parent::getAccessTokenRequest($params);
 
-        $token_string = base64_encode($this->clientId . ':' . $this->clientSecret);
+        $token_string = base64_encode($this->clientId.':'.$this->clientSecret);
 
         return $request->withHeader('Authorization', "Basic $token_string");
     }
@@ -92,7 +101,7 @@ class Twitter extends AbstractProvider
      */
     protected function fetchResourceOwnerDetails(AccessToken $token)
     {
-        $url = $this->getResourceOwnerDetailsUrl($token) . '?' . http_build_query(['user.fields' => 'id,name,profile_image_url,username']);
+        $url = $this->getResourceOwnerDetailsUrl($token).'?'.http_build_query(['user.fields' => 'id,name,profile_image_url,username']);
 
         $request = $this->getAuthenticatedRequest(self::METHOD_GET, $url, $token);
 
@@ -130,9 +139,11 @@ class Twitter extends AbstractProvider
     /**
      * {@inheritDoc}
      *
+     * @param ResponseInterface $response
+     * @param array|string      $data     Parsed response data
+     *
      * @throws TwitterIdentityProviderException
-     * @param  ResponseInterface $response
-     * @param  array|string $data Parsed response data
+     *
      * @return void
      */
     protected function checkResponse(ResponseInterface $response, $data): void
@@ -172,7 +183,8 @@ class Twitter extends AbstractProvider
      */
     public function generatePkceVerifier(): string
     {
-        $generator = (new RandomLibFactory)->getMediumStrengthGenerator();
+        $generator = (new RandomLibFactory())->getMediumStrengthGenerator();
+
         return $generator->generateString(
             $generator->generateInt(43, 128), // Length between 43-128 characters
             '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-._~'
@@ -183,11 +195,13 @@ class Twitter extends AbstractProvider
      * Get the hashed and encoded PKCE challenge string for the request.
      *
      * @param string $passed_verifier Verifier string to use. Defaults to $this->getPkceVerifier().
+     *
      * @return string
      */
     public function generatePkceChallenge(string $passed_verifier = null): string
     {
         $verifier = $passed_verifier ?? $this->getPkceVerifier();
+
         return $this->base64Urlencode(hash('SHA256', $verifier, true));
     }
 }
