@@ -1,0 +1,23 @@
+{
+    "name": "ianm/oauth2-twitter",
+    "description": "Twitter OAuth 2.0 Client Provider with PKCE for The PHP League OAuth2-Client",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "IanM",
+            "email": "ian@morland.dev"
+        }
+    ],
+    "keywords": [
+        "oauth2", "twitter", "auth"
+    ],
+    "require": {
+        "league/oauth2-client": "^2.6",
+        "paragonie/random-lib": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+          "IanM\\OAuth2\\Client\\": "src/"
+        }
+    }
+}
